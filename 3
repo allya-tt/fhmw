@@ -1,0 +1,87 @@
+import com.codeborne.selenide.commands.As;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
+
+import java.lang.module.Configuration;
+
+public class forPractise {
+    private WebDriver driver;
+    @BeforeEach
+    public void setUp() {
+        String browser = System.getProperty("browser");
+        if (browser.equals("chrome")) {
+            WebDriverManager.chromedriver().setup();
+            driver = new ChromeDriver();
+        } else if (browser.equals("firefox")) {
+            WebDriverManager.firefoxdriver().setup();
+            driver = new FirefoxDriver();
+        } else if (browser.equals("edge")) {
+            WebDriverManager.edgedriver().setup();
+            driver = new EdgeDriver();}
+    }
+    @Test
+    public void aSimpleTest() throws InterruptedException {
+        String url = "https://the-internet.herokuapp.com/dropdown";
+        driver.get(url);
+        Assertions.assertTrue(driver.findElement(By.tagName("h3")).isDisplayed());
+//        WebElement titleElement = driver.findElement(By.xpath("//*[@class = 'example']//h3"));
+//        Assertions.assertTrue(titleElement.isDisplayed());
+        Thread.sleep(3000);
+//        String titleText = titleElement.getText();
+//        Assertions.assertEquals("Dropdown List", titleText);
+//        driver.manage().window().maximize();
+//        System.out.println("Current URL = " + driver.getCurrentUrl());
+//        Assertions.assertEquals(url, driver.getCurrentUrl());
+    }
+
+    @Test
+    public void inputTest() throws InterruptedException {
+        String url = "https://the-internet.herokuapp.com/inputs";
+        driver.get(url);
+        WebElement input = driver.findElement(By.cssSelector("input[type='number']"));
+        input.sendKeys("123");
+        Thread.sleep(2000);
+        input.clear();
+        Thread.sleep(2000);
+        Assertions.assertTrue(input.getText().equals(""));
+    }
+
+
+    @Test
+    public void radioTest() throws InterruptedException {
+        String url = "https://academ-it-school.ru/payment?course=auto_test";
+        driver.get(url);
+        WebElement radiobutton = driver.findElement(By.cssSelector("#form_course_0"));
+        radiobutton.click();
+        Thread.sleep(2000);
+        Assertions.assertEquals("true", radiobutton.getAttribute("checked"));
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void selectTest() throws InterruptedException {
+        String url = "https://htmlbook.ru/html/select";
+        driver.get(url);
+        WebElement selectDropdown = driver.findElement(By.cssSelector("[name='select2']"));
+        Select select = new Select(selectDropdown);
+        select.selectByVisibleText("Шапокляк");
+        Thread.sleep(2000);
+        Assertions.assertEquals("Шапокляк", selectDropdown.getAttribute("value"));
+        Thread.sleep(2000);
+    }
+    @AfterEach
+    public void tearDown(){
+        driver.quit();
+    }
+
+}
